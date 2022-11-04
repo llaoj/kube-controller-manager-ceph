@@ -1,6 +1,5 @@
-FROM k8s.gcr.io/kube-controller-manager:v1.20.4
+FROM ceph/ceph-amd64:v14.2.19-20210330
 
-RUN apt-get update 
-RUN apt-get install ceph-fs-common ceph-common
-RUN apt-get clean 
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+ADD https://rutron.oss-cn-beijing.aliyuncs.com/kubernetes/kube-controller-manager-v1.20.4 /usr/local/bin/kube-controller-manager
+
+RUN chmod +x /usr/local/bin/kube-controller-manager
