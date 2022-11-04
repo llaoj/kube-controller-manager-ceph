@@ -1,0 +1,23 @@
+name: build container image
+
+on:
+  push:
+    tags:
+    - 'v[0-9].[0-9]+.[0-9]+'
+
+env:
+  REGISTRY: registry.cn-beijing.aliyuncs.com
+  IMAGE_REPO: llaoj/kube-controller-manager-ceph
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and push image to ACR
+        run: |
+          GITHUB_REF=${GITHUB_REF#refs/*/}
+          IMAGE=${REGISTRY}/${IMAGE_REPO}:$GITHUB_REF
+          docker build -f deploy/Dockerfile -t $IMAGE .
+          docker login -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.REGISTRY_PASSWORD }} $REGISTRY
+          docker push $IMAGE
